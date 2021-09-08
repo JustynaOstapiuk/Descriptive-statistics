@@ -1,0 +1,58 @@
+# Zadanie 1 
+# tworzymy wektor naszych danych o nazwie czas
+czas <- c(2,3,5,6,10,6,10,7,10,4,9,10,11,11,12,13,15,18,17,10,2,4,6,7,7,8,8,9,18,9,10,12,14,9,14,19,16,20,8,11)
+length(czas) # sprawdzamy dlugosc wektora liczbowego o nazwie czas by upewnic sie, że mamy dobra ilosc danych przypisanych
+
+# a)
+# wyznacz miary polozenia X: srednia (arytmetyczna, wazona, harmoniczna, geometryczna), dominante, kwantyle (0.05, 0.25, 0.5, 0.75, 0.95),
+
+# srednia arytmetyczna
+mean(czas)
+# srednia wazona
+weighted.mean(czas)
+# srednia harmoniczna
+install.packages("psych") # instalacja pakietu "psych"
+library(psych)
+harmonic.mean(czas)
+# srednia geometryczna
+geometric.mean(czas)
+# lub 
+exp(mean(log(czas)))
+# dominanta 
+getmode <- function(czas) {
+  uniqv <- unique(czas)
+  uniqv[which.max(tabulate(match(czas, uniqv)))]
+}
+wynik <- getmode(czas)
+print(wynik)
+# lub 
+install.packages("RVAideMemoire")
+library(RVAideMemoire)
+mod(czas)
+
+# kwantyle (0.05, 0.25, 0.5, 0.75, 0.95)
+quantile(czas, c(0.05, 0.25, 0.5, 0.75, 0.95))
+
+# b) 
+# stworz wykres dystrybuanty empirycznej dla szeregu punktowego i przedzialowego
+  
+# szereg rozdzielczy punktowy 
+czas_punktowy <- table(czas) # za pomoca table grupujemy dane do tabeli 
+czas_punktowy
+ecdf(czas_punktowy) # ecdf tworzy dystrybuante empiryczna
+ecdf(czas_punktowy)(names(table(czas_punktowy)))
+data.frame(wartosci = names(table(czas_punktowy)), czestosc_skokowa = ecdf(czas_punktowy)(names(table(czas_punktowy))))
+plot(ecdf(czas_punktowy), xlab = "Czas obslugi klientow", ylab = "Laczna czestosc",
+     main = "Dystrybuanta empiryczna dla szeregu punktowego")
+
+# szereg rozdzielczy przedzialowy
+# uszeregujmy wartosci od najmniejszy do najwiekszych 
+czas[order(czas)]
+# dzielimy na przedzialy takie jak w Excelu 
+czas_przedzialowy <- cut(czas, breaks = c(2,6,10,14,18,22))
+czas_przedzialowy
+# tworzymy tabele 
+table(czas_przedzialowy)
+plot(ecdf(czas_przedzialowy), xlab = "Czas obslugi klientow", ylab = "Laczna czestosc",
+     main = "Dystrybuanta empiryczna dla szeregu przedzialowego")
+
