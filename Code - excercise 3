@@ -1,0 +1,121 @@
+wiek <- c(18,35,29,18,55,28,25,34,50,19,44,35,25,52,20,42,37,27,50,22,39,60,49,41,21,59,28,46,43,38,52,43,48,32,20,51,23,28,21,30)
+# sortujemy od najmniejszej wartosci do najwiekszej 
+wiek[order(wiek)]
+wiek
+
+min(wiek) # minimalny wiek to 18 
+max(wiek) # maksymalny wiek to 60 
+length(wiek) # proba to 40 pracownikow 
+mean(wiek) # sredni wiek to 35.925
+var(wiek) # wariancja wynosi 157.1994
+sd(wiek) # odchylenie standardowe wynosi 12.53792
+
+# typowy obszar zmiennosci 
+(srednia <- mean(wiek)) # 35.925
+(odchylenie <- sd(wiek)) # 12.53792
+(lower <- srednia-odchylenie) # 23.38708
+(upper <- srednia+odchylenie) # 48.46292
+
+# śr-s<x_typ<śr+s
+# (23.38708,48.46292) ok.68%zawartości danych w próbie
+
+# śr-2s<x_typ<śr+2s
+(lower <- srednia-2*odchylenie) # 10.84917
+(upper <- srednia+2*odchylenie) # 61.00083
+# (10.84917,61.00083) ok.95%zawartości danych w próbie
+
+
+# śr-3s<x_typ<śr+3s
+(lower <- srednia-3*odchylenie) # -1.688751
+(upper <- srednia+3*odchylenie) # 73.53875
+# (-1.688751, 73.53875) ok.99%zawartości danych w próbie
+
+# szereg rozdzielczy punktowy 
+table(wiek)
+
+# szereg rodzdzielczy przedzialowy (z otwartym przedzialem)
+przedzialy <- cut(wiek, breaks = c(0, 20, 30, 40, 50, 60))
+przedzialy <- cbind(table(przedzialy))
+colnames(przedzialy) <- c("czestosc")
+przedzialy
+
+# szereg rodzdzielczy przedzialowy (z domknietym przedzialami)
+przedzialy_2 <- cut(wiek, breaks = c(15, 24, 34, 44, 54, 64))
+przedzialy_2 <-cbind(table(przedzialy_2))
+colnames(przedzialy_2) <- c("czestosc")
+przedzialy_2
+
+# Tablica częstości absolutnych, względnych, procentowych.
+suma <- length(wiek)
+tablica <- data.frame(
+  Dolna.granica.przedzialu = c(NA , 21, 31, 41, 51),
+  Gorna.granica.przedzialu = c(20, 30, 40, 50, 60),
+  Wiek.w.latach = c("do 20", "21-30", "31-40", "41-50", "51-60"),
+  Czestosci.absolutne = c(5, 12, 7, 10, 6), 
+  Czestosci.absolutne.skumulowane = c(5, 17, 24, 34, 40),
+  Czestosci.wzgledne = c(5/suma, 12/suma, 7/suma, 10/suma, 6/suma),
+  Czestosci.wzgledne.skumulowane = c(5/suma, 17/suma, 24/suma, 34/suma, 40/suma),
+  Czestosci.procentowe = c(12.50, 30.00,17.50,25.00,15.00),
+  Czestosci.procentowe.skumulowane = c(12.50,42.50,60.00,85.00,100)
+)
+View(tablica)
+
+# histogram liczebnosci (czesci absolutne)
+barplot(tablica$Czestosci.absolutne, 
+        main = "Histogram liczebnosci (czestosci absolutne)", 
+        xlab = "Wiek w latach", 
+        names.arg = c("do 20", "21-30", "31-40", "41-50", "51-60"),
+        col = "blue")
+legend("topright",c("czestosci absolutne ni"), fill="blue", horiz=TRUE, cex=0.8)
+
+
+# histogram liczebnosci (czesci absolutne skumulowane)
+barplot(tablica$Czestosci.absolutne.skumulowane,
+        main = "Histogram liczebnosci (czestosci absolutne)", 
+        xlab = "Wiek w latach", 
+        names.arg = c("do 20", "21-30", "31-40", "41-50", "51-60"),
+        col = "blue")
+legend("topleft", inset = 0.04,c("czestosci absolutne skumulowane"), fill="blue", horiz=TRUE, cex=0.8)
+
+# Dystrybuanta empiryczna wieku pracowników (częstości względne skumulowane)
+plot(y = tablica$Czestosci.wzgledne.skumulowane, x = c(20, 30, 40, 50, 60), type = "o", 
+     main = "Dystrybuanta empiryczna wieku pracowników (częstości względne skumulowane)",
+     ylab = "Czestosci.wzgledne.skumulowane", 
+     xlab = "Wiek pracownikow",
+     col = "blue"
+     )
+legend("topleft", inset = 0.04,c("czestosci wzgledne skumulowane"), fill="blue", horiz=TRUE, cex=0.8)
+
+# Diagram skumulowanych liczebności (częstości absolutne skumulowane)
+plot(y = tablica$Czestosci.absolutne.skumulowane, x = c(20, 30, 40, 50, 60), type = "o", 
+     main = "Diagram skumulowanych liczebności (częstości absolutne skumulowane)",
+     ylab = "Czestosci.wzgledne.skumulowane", 
+     xlab = "Wiek pracownikow",
+     col = "blue"
+)
+legend("topleft", inset = 0.04,c("czestosci absolutne skumulowane"), fill="blue", horiz=TRUE, cex=0.8)
+
+# Wykres kolowy 
+slices <- tablica$Czestosci.procentowe
+lbls <- c("12.50%", "30.00%", "17.50%", "25.00%", "15.00%")
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+    main="Wykres kolowy") 
+legend("topright", c("do 20", "21-30", "31-40", "41-50", "51-60"), cex = 0.8,
+       fill = rainbow(length(lbls)))
+
+# Wykres słupkowy
+wykres <- cbind(tablica$Czestosci.procentowe)
+wykres
+barplot(wykres, main = "Wykres slupkowy",
+        horiz = T, col = rainbow(length(tablica$Czestosci.procentowe)),
+        ylab = "Czestosci absolutne ni",
+        xlab = "Czestosci procentowe")
+legend("topright", c("do 20", "21-30", "31-40", "41-50", "51-60"), cex = 1,
+       fill = rainbow(length(tablica$Czestosci.procentowe)))
+
+# Jaki procent wszystkich pracowników stanowią osoby w wieku 31-40 lat? Odp. 17.5 % 
+
+# Jaki procent wszystkich pracowników stanowią osoby, które nie przekroczyły 40 lat?
+# Odp. Nie mamy osoby o wieku 40 lat, wiec mozemy zliczyc osoby z przedzialow: do 20, 21-30, 31-40.
+# 12.5 + 30 + 17.5 = 60%
+# mozmy rowniez wartosc 60% odczytac z wykresu slupkowegos
