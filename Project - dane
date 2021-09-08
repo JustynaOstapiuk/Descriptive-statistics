@@ -1,0 +1,227 @@
+library(readxl)
+dane = read_excel("C:/Users/Justyna/Desktop/projekt/dane.xlsx")
+# View(dane)
+
+jablka <- dane$Jablka
+pomarancze <- dane$Pomarancze
+cytryny <- dane$Cytryny
+# Analiza statystyk opisowych dotyczacych jablek, pomaranczy, cytryn w wojewodztwach: malopolskim, podkarpackim, podlaskim w latach 2017-2019
+quantile(jablka)
+mean(jablka)
+quantile(pomarancze)
+mean(pomarancze)
+quantile(cytryny)
+mean(cytryny)
+
+# Srednia cena za kilo jablek w latach 2017-2019 to 2.853241 zl. 
+# Srednia cena za kilo pomaranczy w latach 2017-2019 to 5.450741 zl.
+# Srednia cena za kilo cytryn w latach 2017-2019 to 7.608889 zl.
+
+########## typowy obszar zmiennosci
+# klasyczny: (srednia arytmetyczna-odchylenie standardowe, srednia arytmetyczna+odchylenie standardowe)
+# pozycyjny: (mediana-(kwartyl 3 - kwartyl 1 / 2), mediana-(kwartyl 3 + kwartyl 1 / 2)
+
+# Miary rozrzutu - jablko 
+max(jablka)-min(jablka)
+quantile(jablka)[4] - quantile(jablka)[2] 
+sd(jablka)
+var(jablka)
+# wspolczynnik zmiennosci:
+sd(jablka)/mean(jablka)
+# blad standardowy sredniej:
+sd(jablka)/sqrt(length(jablka))
+
+# Typowym obszarem zmiennosci dla jablek bedzie 2.853241 - 0.6859114 = 2.16733 oraz 2.853241 + 0.6859114 = 3.539152
+# Typowa cena jablek (zl) w latach 2017-2019 zawarta jest w przedziale 2.16733 < x < 3.539152
+
+# Miary rozrzutu - pomarancz
+max(pomarancze)-min(pomarancze)
+quantile(pomarancze)[4] - quantile(pomarancze)[2]
+sd(pomarancze)
+var(pomarancze)
+# wspolczynnik zmiennosci:
+sd(pomarancze)/mean(pomarancze)
+# blad standardowy sredniej:
+sd(pomarancze)/sqrt(length(pomarancze))
+# Typowym obszarem zmiennosci dla pomaranczy bedzie 5.450741 - 0.6989962 = 4.751745 oraz 5.450741 + 0.6989962 = 6.149737
+# Typowa cena pomaranczy (zl) w latach 2017-2019 zawarta jest w przedziale 4.751745 < x < 6.149737. W obszarze tym mie?ci si? na og?? oko?o 2/3 wszystkich warto?ci badanej cechy.
+
+# Miary rozrzutu - cytryna
+max(cytryny)-min(cytryny)
+quantile(cytryny)[4] - quantile(cytryny)[2]
+sd(cytryny)
+var(cytryny)
+# wspolczynnik zmiennosci:
+sd(cytryny)/mean(cytryny)
+# blad standardowy sredniej:
+sd(cytryny)/sqrt(length(cytryny))
+# Typowym obszarem zmiennosci dla cytryn bedzie 7.608889 - 1.344219 =  6.26467 oraz 7.608889 + 1.344219 = 8.953108
+# Typowa cena cytryn (zl) w latach 2017-2019 zawarta jest w przedziale 6.26467 < x < 8.953108        
+
+# Histogram, gestosc teoretyczna - jablka
+hist(jablka,probability = T, col=rainbow(9), ylab="")
+rug(jablka,col="black")
+lines(density(jablka))
+# Gestosc empiryczna
+curve(dnorm(x,mean=mean(jablka),sd=sd(jablka)),add=T, col="black", lwd=2, lty=3)
+
+# Wykres ramka z wasami 
+boxplot(jablka, horizontal = F, col ="white") # wykres badanej cechy jest asymetryczny 
+
+# Histogram, gestosc teoretyczna - pomarancze
+hist(pomarancze,probability = T, col=rainbow(9), ylab="")
+rug(pomarancze,col="black")
+lines(density(pomarancze))
+# Gestosc empiryczna
+curve(dnorm(x,mean=mean(pomarancze),sd=sd(pomarancze)),add=T, col="black", lwd=2, lty=3)
+
+# Wykres ramka z wasami 
+boxplot(pomarancze, horizontal = F, col ="white") # wykres badanej cechy jest asymetryczny 
+
+# Histogram, gestosc teoretyczna - cytryny
+hist(cytryny,probability = T, col=rainbow(9), ylab="")
+rug(cytryny,col="black")
+lines(density(cytryny))
+# Gestosc empiryczna
+curve(dnorm(x,mean=mean(cytryny),sd=sd(cytryny)),add=T, col="black", lwd=2, lty=3)
+
+# Wykres ramka z wasami 
+boxplot(cytryny, horizontal = F, col ="white") # obserujemy wartosci odstajace, wykres badanej cechy jest asymetryczny
+
+# Testowanie hipotez statystycznych dotyczacych wartosci sredniej, wystarczajacej licznosci proby i testowania normalnosci rozkladu.
+
+# Liczebnosc proby 
+# jablka
+alfa =0.05
+1-alfa
+mean(jablka)
+length(jablka)
+
+#zalozenie - nie znamy odchylenia standardowego
+d <- 0.25
+e <-qnorm(1-alfa/2)
+
+(e*sd(jablka)/d)^2
+# Minimalna liczebnosc proby wynosi 28.9 (29), dlatego tez liczebosc naszej proby jest odpowiednia. 
+
+# pomarancze
+alfa =0.05
+1-alfa
+mean(pomarancze)
+length(pomarancze)
+
+#zalozenie - nie znamy odchylenia standardowego
+d <- 0.25
+e <-qnorm(1-alfa/2)
+
+(e*sd(pomarancze)/d)^2
+# Minimalna liczebnosc proby wynosi 30, dlatego tez liczebosc naszej proby jest odpowiednia. 
+
+# cytryny
+alfa =0.05
+1-alfa
+mean(cytryny)
+length(cytryny)
+
+#zalozenie - nie znamy odchylenia standardowego
+d <- 0.25
+e <-qnorm(1-alfa/2)
+
+(e*sd(cytryny)/d)^2
+# Minimalna liczebnosc proby wynosi 111.1, dlatego tez liczebosc naszej proby jest zbyt mala. 
+
+# Normalnosc rozkladu 
+# poziom istotno??i 0.05
+# H0: rozklad jest rozkladem normalnym
+# H1: rozklad jest rozny od rozkladu normalnego 
+shapiro.test(dane$Jablka) # p-value = 0.000138 < poziom istotno??i 0.05 -> sa podstawy do odrzucenia H0 -> rozklad jest rozny od rozkladu normalnego 
+shapiro.test(dane$Pomarancze) # p-value = 0.2592 > poziom istotno??i 0.05 -> brak podstaw do odrzucenia H0 -> rozklad jest rozkladem normalnym
+shapiro.test(dane$Cytryny) # p-value = 2.9e-05 < poziom istotno??i 0.05 -> sa podstawy do odrzucenia H0 -> rozklad jest rozny od rozkladu normalnego 
+
+library(RVAideMemoire)
+byf.shapiro(dane$Jablka~dane$Wojewodztwo) # p-value dla kazdego wojewodztwa < 0.05 -> rozklady rozne od rozkladu normalnego 
+byf.shapiro(dane$Pomarancze~dane$Wojewodztwo) 
+# p-value < 0.05 dla wojewodztwa podkarpackiego -> rozklad rozny od rozkladu normalnego
+# p-value > 0.05 dla wojewodztwa malopolskiego i podlaskiego  -> rozklady normalne
+byf.shapiro(dane$Cytryny~dane$Wojewodztwo)
+# p-value dla wojewodztwa malopolskiego < 0.05 -> rozklad rozny od rozkladu normalnego 
+# p-value dla wojewodztwa podkarpackiego i podlaskiego  -> rozklady normalne
+
+# Porownanie dwoch srednich - jablka
+# nie spelniaja warunku o rozkladzie normalnym 
+
+# Porownanie dwoch srednich - pomarancze
+# H0: srednie w wojewodztwach malopolskim i podlaskim nie roznia sie istotnie
+# H1: srednie w wojewodztwie malopolskim jest wieksza niz w podlaskim
+
+
+x <- dane$Pomarancze[dane$Wojewodztwo=="MALOPOLSKIE"]
+y <- dane$Pomarancze[dane$Wojewodztwo=="PODLASKIE"]
+
+uobl = (mean(x)-mean(y))/ sqrt(var(x)/length(x) + var(y)/length(y) )
+uobl # 5.814107
+
+alfa =0.05
+ukryt <- qnorm(1-alfa) # prawostronny obszar krytyczny
+ukryt # 1.644854
+# obszar krytyczny [1.64;nieskonczonosc)
+# wniosek: uobl miesci sie w obszarze krytycznym -> sa podstawy do odrzucenia H0 i przyjecia H1
+# srednie w wojewodztwie malopolskim jest wieksza niz w podlaskim 
+
+# Porownanie dwoch srednich - cytryny
+# H0: srednie w wojewodztwach podkarpackim i podlaskim nie roznia sie istotnie
+# H1: srednie w wojewodztwie podkarpackim jest wieksza niz w podlaskim
+
+x <- dane$Cytryny[dane$Wojewodztwo=="PODKARPACKIE"]
+y <- dane$Cytryny[dane$Wojewodztwo=="PODLASKIE"]
+
+uobl = (mean(x)-mean(y))/ sqrt(var(x)/length(x) + var(y)/length(y) )
+uobl  # 1.420434
+
+alfa =0.05
+ukryt <- qnorm(1-alfa)
+ukryt # 1.644854
+# obszar krytyczny [1.64;nieskonczonosc)
+# wniosek: uobl nie  miesci sie w obszarze krytycznym -> brak podstaw do odrzucenia H0 
+# srednie w wojewodztwach podkarpackim i podlaskim nie roznia sie istotnie
+
+# Analiza wariancji r??nic w trzech regionach. Dodatkowo zobrazowania r??nic na wybranym wykresie.
+malopolskie = subset(dane, Wojewodztwo == "MALOPOLSKIE")
+podkarpackie = subset(dane, Wojewodztwo == "PODKARPACKIE")
+podlaskie = subset(dane, Wojewodztwo == "PODLASKIE")
+
+#################### 
+tapply(dane$Cytryny, dane$Malopolskie, mean)
+tapply(dane$Cytryny, dane$Malopolskie, sd)
+
+tapply(dane$Pomarancze, dane$Malopolskie, mean)
+tapply(dane$Pomarancze, dane$Malopolskie, sd)
+
+# H0: wariancje jednorodne
+# H1: wariancje niejednorodne
+var(malopolskie$Pomarancze) # 0.2387247
+var(podkarpackie$Pomarancze) # 0.3829029
+var(podlaskie$Pomarancze) # 0.486119
+var.test(podkarpackie$Pomarancze, malopolskie$Pomarancze, alternative = "greater") #  p-value = 0.08359 -> wariancje jednorodne
+var.test(podlaskie$Pomarancze, malopolskie$Pomarancze, alternative = "greater") # p-value = 0.01935 -> wariancje niejednorodne
+var.test(podlaskie$Pomarancze, podkarpackie$Pomarancze, alternative = "greater") # p-value = 0.2419 -> wariancje jednorodne
+
+var(malopolskie$Cytryny) # 2.368083
+var(podkarpackie$Cytryny) # 1.661345
+var(podlaskie$Cytryny) # 1.26129
+var.test(malopolskie$Cytryny, podkarpackie$Cytryny, alternative = "greater") #  p-value = 0.1496 -> wariancje jednorodne
+var.test(malopolskie$Cytryny, podlaskie$Cytryny, alternative = "greater") # p-value = 0.03323 -> wariancje niejednorodne
+var.test(podkarpackie$Cytryny, podlaskie$Cytryny, alternative = "greater") # p-value = 0.2096 -> wariancje jednorodne
+
+# Ilustracje graficzne
+boxplot(Cytryny~Wojewodztwo,data=dane, col="white" ,border="black")
+x <- tapply(dane$Cytryny, dane$Malopolskie, mean)
+points(x, col="red", pch=15)
+
+boxplot(Pomarancze~Wojewodztwo,data=dane, col="white" ,border="black")
+x <- tapply(dane$Cytryny, dane$Malopolskie, mean)
+points(x, col="red", pch=15)
+
+dane$Wojewodztwo<-as.factor(dane$Wojewodztwo)
+plot.design(Cytryny~Wojewodztwo, data = dane)
+plot.design(Pomarancze~Wojewodztwo, data = dane)
