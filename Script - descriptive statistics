@@ -1,0 +1,71 @@
+# Skrypt, który w sposób calościowy będzie analizowal dane empiryczne w postaci próby pobranej z populacji.
+
+# wczytanie danych 
+dane = read.table(file.choose(), header = FALSE, sep = ';')
+# podglad danych 
+View(dane)
+
+# wprowadzmy probne dane do testow
+dane = c(1,3,4.4,6,67,8,8)
+
+# instalacja potrzebnych pakietow
+install.packages("psych") 
+install.packages("RVAideMemoire")
+install.packages("moments")
+
+# zaladowanie potrzebnych pakietow
+library(psych)
+library(RVAideMemoire)
+library(moments)
+
+options(digits = 5, scipen = 999) # zmiana zaokraglenia liczb do 4 po przecinku oraz zmiana notacji wykladniczej na zwykle liczby
+
+analiza=function(dane){
+  wyniki=data.frame(Analiza=c("Srednia.arytmetyczna", "Srednia.wazona", "Srednia.haromoniczna", "Srednia.geometryczna",
+                              "Dominanta", "Kwantyle", "Mediana", "Wariancja", "3-ci moment centralny", "4-ty moment centralny", 
+                              "Wspolczynik skosniosci", "Kurtoza", "Wspolczynnik ekscesu", "Odchylenie standardowe", 
+                              "Wspolczynnik zmiennosci", "Typowy obszar zmiennosci"), Wynik=NA, Lower=NA, Upper=NA)
+  wyniki[1,2]=mean(dane)
+  wyniki[2,2]=weighted.mean(dane)
+  wyniki[3,2]=harmonic.mean(dane)
+  wyniki[4,2]=geometric.mean(dane)
+  wyniki[5,2]=mod(dane)
+  wyniki[6,2]=quantile(dane,c(0.05))
+  wyniki[7,2]=median(dane)
+  wyniki[8,2]=var(dane)
+  wyniki[9,2]=moment(dane,order=3,central=T)
+  wyniki[10,2]=moment(dane,order=4,central=T)
+  wyniki[11,2]=skewness(dane)
+  wyniki[12,2]=kurtosis(dane)
+  wyniki[13,2]=kurtosis(dane)-3
+  wyniki[14,2]=sd(dane)
+  wyniki[15,2]=(sd(dane)/mean(dane))*100
+  wyniki[16,3]=(mean(dane)-sd(dane)) 
+  wyniki[16,4]=(mean(dane)+sd(dane)) 
+  
+  wyniki
+}
+# wywolanie funkcji
+analiza(dane)
+
+interpretacja = function(dane){
+  opis=data.frame(Interpretacja=c("Typ asymetrii", "Typ rozkladu"), Opis=NA)
+  opis[1,2]=if (wyniki[11,2] > 0){
+    print('Asymetria prawostronna')}
+  if(wyniki[11,2] < 0){
+    print('Asymetria lewostronna') 
+  }
+  
+  opis[2,2]=if (wyniki[12,2] > 3){
+    print('Rozklad leptokurtyczny')}
+  if(wyniki[12,2] < 3){
+    print('Rozklad platokurtyczny') 
+  }
+  if (wyniki[12,2] == 3){
+    print('Rozklad mezokurtyczny')
+  }
+  opis
+}
+
+interpretacja(dane)
+
