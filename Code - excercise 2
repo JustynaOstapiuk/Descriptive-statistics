@@ -1,0 +1,67 @@
+# Zadanie 2 
+temperatura <- c(0,2,5,8,12,15,17,20,22,24,27)
+liczba_dni <- c(2,3,3,4,5,6,2,2,1,1,1)
+
+# Jaki odsetek dni miał nietypowe temperatury ?		
+# typowy obszar zmiennosci 
+srednia <- mean(temperatura) # 13.81818
+odchylenie <- sd(temperatura) # 9.163167
+lower <- srednia-odchylenie
+upper <- srednia+odchylenie
+
+# śr-s<x_typ<śr+s
+# (13.81818 - 9.163167, 13.81818 + 9.163167)
+# (4.655013, 22.98135)
+wartosci_odstajace <- which(temperatura < lower | temperatura > upper)
+wartosci_odstajace # wskazuje nam ze wartosc 1  2 10 11 w zbiorze jest odstajaca, czyli 4 sposrod 11 wartosci temperatury sa nietypowe, 
+# zakladajac, ze 66.66% (2/3) wartosci znajduje sie w typowym obszarze zmiennosci 
+# Wartosci odstajace temperatury to 0, 2, 24 oraz 27. Odpowiada im nastepujaca liczba dni 2, 3, 1, 1. Oznacza to, ze sposrod
+# lacznej liczby dni wynoszacej 30, 7 dni posiada nietypowe temperatury, daje to nam 23,33% dni z nietypowa temperatura. 
+
+# śr-2s<x_typ<śr+2s
+lower <- srednia-2*odchylenie
+upper <- srednia+2*odchylenie
+wartosci_odstajace <- which(temperatura < lower | temperatura > upper)
+wartosci_odstajace # wskazuje nam ze nie istnieja wartosci nietypowe, zakladajac, ze 95% wartosci znajduje sie w typowym obszarze zmiennosci 
+
+# śr-3s<x_typ<śr+3s
+lower <- srednia-3*odchylenie
+upper <- srednia+3*odchylenie
+wartosci_odstajace <- which(temperatura < lower | temperatura > upper)
+wartosci_odstajace # wskazuje nam ze nie istnieja wartosci nietypowe, zakladajac, ze 99% wartosci znajduje sie w typowym obszarze zmiennosci 
+
+# Zbadaj i zinterpretuj asymetrię powyższego rozkładu.
+install.packages("moments")
+library(moments)
+
+skewness(temperatura) # -0.1382217 wynik ponizej 0 wskazuje na asymetrie lewostronna, gdzie (średnia<Me<D)
+#  Rozklady lewoskośne (z  lewej  ukośne,  z  prawej  strome) charakteryzuja sie tym, ze przedział  klasowy 
+# zawierający największą liczbę obserwacji jest przesunięty w prawo, czyli stosunkowo niewiele 
+# jednostek  posiada  niskie  wartości  cechy,  natomiast  licznie  występują  te  o  wysokich wartościach.
+# Asymetria lewostronna mówi nam, ze wieksza czesc danych dotyczacych temperatury przyjmuje wartosci powyzej przecietnej. 
+skewness(liczba_dni) # 0.7156319 wynik powyzej 0 wskazuje na asymetrie prawostronna, gdzie (średnia>Me>D)
+# Rozklady prawoskośne (z lewej strome, z prawej ukośne) charakteryzuja sie tym, ze większość obserwacji 
+# grupuje się w przedziałach znajdujących się bliżej początku szeregu, czyli dużo elementów 
+# posiada stosunkowo niskie wartości cechy, natomiast niewiele jest obserwacji o wysokich wartościach.
+# Asymetria prawostronna mówi nam, że większa część liczby dni przyjmuje wartości poniżej przeciętnej.
+ 
+# Oblicz i zinterpretuj kurtozę oraz współczynnik ekscesu.	
+
+# Kurtoza jest miarą występowania wartości odstających. Podobnie jak w przypadku skośności, wartość 0 kurtozy wskazuje na kształt zbliżony do normalnego.
+# Rozkłady prawdopodobieństwa można podzielić ze względu na wartość kurtozy na rozkłady: 
+# Ku=3 (i Ex=0) – rozkład mezokurtyczny – spłaszczenie rozkładu jest podobne do spłaszczenia rozkładu normalnego (dla którego kurtoza wynosi dokładnie 0).
+# Ku>3 (i Ex>0) – rozkład leptokurtyczny – wartości cechy bardziej skoncentrowane (bardziej wysmukłe) niż przy rozkładzie normalnym.
+# Ku<3 (i Ex<0) – rozkład platokurtyczny – kurtoza jest ujemna, wartości cechy mniej skoncentrowane (bardziej spłaszczone) niż przy rozkładzie normalnym.
+
+# kurtoza
+kurtosis(temperatura) # 1.718773 -> wynik kurtozy < 3, wartości cechy temperatury sa mniej skoncentrowane niż przy rozkładzie normalnym. 
+kurtosis(liczba_dni) # 2.376379 -> wynik kurtozy < 3, wartości cechy liczby dni sa mniej skoncentrowane niż przy rozkładzie normalnym.
+
+# współczynnik ekscesu 
+kurtosis(temperatura) - 3 # -1.281227
+kurtosis(liczba_dni) - 3 # -0.6236212
+
+# W przypadku obydwu cech temperatury jak i liczby dni mamy ze względu na wartość kurtozy ponizej 3 oraz współczynnika ekscesu poniżej 0 mamy do czynienia z rozkladem platokurtycznym 
+# (bardziej spłaszczony ni̇z rozkład normalnym). Kurtoza jest ujemna, wartości cechy mniej skoncentrowane (bardziej spłaszczone) niż przy rozkładzie normalnym.
+# W obydwu zbiorach danych możemy zaobserwować większą liczbę wyników skrajnych (znacznie oddalonych od średniej).
+
